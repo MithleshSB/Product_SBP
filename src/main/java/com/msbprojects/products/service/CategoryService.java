@@ -3,6 +3,8 @@ package com.msbprojects.products.service;
 import com.msbprojects.products.dto.CategoryDTO;
 import com.msbprojects.products.entity.Category;
 import com.msbprojects.products.entity.Product;
+import com.msbprojects.products.exception.CategoryAlreadyExistsException;
+import com.msbprojects.products.exception.CategoryNotFoundException;
 import com.msbprojects.products.mapper.CategoryMapper;
 import com.msbprojects.products.mapper.ProductMapper;
 import com.msbprojects.products.repository.CategoryRepository;
@@ -18,7 +20,11 @@ public class CategoryService {
 
     private CategoryRepository categoryRepository;
     //create category
-    public CategoryDTO createCategory(CategoryDTO categoryDTO){
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) throws CategoryAlreadyExistsException {
+        Optional<Category> optionalCategory= categoryRepository.findByName(categoryDTO.getName());
+        if(optionalCategory.isPresent()){
+            throw new CategoryAlreadyExistsException("Category "+categoryDTO.getName()+" already exists.");
+        }
         Category categoryEntity = CategoryMapper.toCategoryEntity(categoryDTO);
         Category savedEntity = categoryRepository.save(categoryEntity);
         return CategoryMapper.toCategoryDTO(savedEntity);
@@ -27,8 +33,9 @@ public class CategoryService {
     public List<CategoryDTO> getAllCategories(){
         return categoryRepository.findAll().stream().map(CategoryMapper::toCategoryDTO).toList();
     }
-    public CategoryDTO getCategoryById(Long Id){
-        Category byId = categoryRepository.findById(Id).orElseThrow(()-> new RuntimeException("Category Not Found"));
+    public CategoryDTO getCategoryById(Long Id) throws CategoryNotFoundException {
+        Category byId = categoryRepository.findById(Id).orElseThrow(()->
+                new CategoryNotFoundException("Category with ID: "+Id+" not found"));
         return CategoryMapper.toCategoryDTO(byId);
     }
     public String deleteCategoryById(Long id){

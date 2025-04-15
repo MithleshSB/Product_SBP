@@ -1,6 +1,8 @@
 package com.msbprojects.products.controller;
 
 import com.msbprojects.products.dto.CategoryDTO;
+import com.msbprojects.products.exception.CategoryAlreadyExistsException;
+import com.msbprojects.products.exception.CategoryNotFoundException;
 import com.msbprojects.products.repository.CategoryRepository;
 import com.msbprojects.products.service.CategoryService;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) throws CategoryNotFoundException {
         return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
@@ -33,7 +35,15 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) throws CategoryAlreadyExistsException {
+        //case 1, we can't do try catch in all methods hence we need global handler
+//        try{
+//            CategoryDTO savedCategory = categoryService.createCategory(categoryDTO);
+//            return  ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+//        } catch (CategoryAlreadyExists ex) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+//        }
+        // Global exception handle will handle automatically no need for try catch.
         return new ResponseEntity<>(categoryService.createCategory(categoryDTO), HttpStatus.CREATED);
     }
 }

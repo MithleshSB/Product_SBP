@@ -4,6 +4,7 @@ import com.msbprojects.products.dto.CategoryDTO;
 import com.msbprojects.products.dto.ProductDTO;
 import com.msbprojects.products.entity.Category;
 import com.msbprojects.products.entity.Product;
+import com.msbprojects.products.exception.CategoryNotFoundException;
 import com.msbprojects.products.mapper.CategoryMapper;
 import com.msbprojects.products.mapper.ProductMapper;
 import com.msbprojects.products.repository.CategoryRepository;
@@ -22,11 +23,11 @@ public class ProductService {
     private ProductRepository productRepository;
 
     //create category
-    public ProductDTO createProduct(ProductDTO productDTO){
+    public ProductDTO createProduct(ProductDTO productDTO) throws CategoryNotFoundException {
 
         //in payload we will have name, price ,description,categoryID
         Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category Not Found."));
+                .orElseThrow(() -> new CategoryNotFoundException("Category with ID: "+productDTO.getCategoryId()+" not found."));
         Product productEntity = ProductMapper.toProductEntity(productDTO,category);
         Product savedEntity = productRepository.save(productEntity);
         return ProductMapper.toProductDTO(savedEntity);

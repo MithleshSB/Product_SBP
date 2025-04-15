@@ -2,6 +2,7 @@ package com.msbprojects.products.controller;
 
 import com.msbprojects.products.dto.CategoryDTO;
 import com.msbprojects.products.dto.ProductDTO;
+import com.msbprojects.products.exception.CategoryNotFoundException;
 import com.msbprojects.products.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ public class ProductController {
 
     private ProductService productService;
     @PostMapping
-    public ResponseEntity<ProductDTO> createProdcut(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<ProductDTO> createProdcut(@RequestBody ProductDTO productDTO) throws CategoryNotFoundException {
         return new ResponseEntity<>(productService.createProduct(productDTO), HttpStatus.CREATED);
     }
 

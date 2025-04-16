@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,8 @@ public class CategoryController {
     public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) throws CategoryNotFoundException {
         return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Delete category by id",description = "Rest Api to delete category by id.")
     @DeleteMapping("/{id}")
     public String deleteCategoryById(@PathVariable Long id) {
@@ -46,6 +49,7 @@ public class CategoryController {
             responseCode = "201",
             description = "CREATED"
     )
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Operation(summary = "Create Category",description = "Rest Api to create category.")
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO) throws CategoryAlreadyExistsException {

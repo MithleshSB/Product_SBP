@@ -43,6 +43,6 @@ public class CategoryService {
         return optionalCategory.map(product -> {
             categoryRepository.deleteById(id);
             return "Category deleted with ID: " + id;
-        }).orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
+        }).orElseThrow(() -> new CategoryNotFoundException("Category with ID: "+id+" not found"));
     }
 }

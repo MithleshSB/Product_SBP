@@ -5,6 +5,7 @@ import com.msbprojects.products.dto.ProductDTO;
 import com.msbprojects.products.entity.Category;
 import com.msbprojects.products.entity.Product;
 import com.msbprojects.products.exception.CategoryNotFoundException;
+import com.msbprojects.products.exception.ProductNotFoundException;
 import com.msbprojects.products.mapper.CategoryMapper;
 import com.msbprojects.products.mapper.ProductMapper;
 import com.msbprojects.products.repository.CategoryRepository;
@@ -38,7 +39,8 @@ public class ProductService {
     }
 
     public ProductDTO getProductById(Long id) {
-        Product byId = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Product Not Found"));
+        Product byId = productRepository.findById(id).orElseThrow(()->
+                new ProductNotFoundException("Product not found with ID: " + id));
         return ProductMapper.toProductDTO(byId);
     }
 
@@ -47,15 +49,15 @@ public class ProductService {
         return optionalProduct.map(product -> {
             productRepository.deleteById(id);
             return "Product deleted with ID: " + id;
-        }).orElseThrow(() -> new RuntimeException("Product not found with ID: " + id));
+        }).orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
 
     }
 
     public ProductDTO updateProductById(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
         Category  category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(()->new RuntimeException("Category Not Found with Id "+ productDTO.getCategoryId()));
+                .orElseThrow(()->new CategoryNotFoundException("Category with ID: "+productDTO.getCategoryId()+" not found."));
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

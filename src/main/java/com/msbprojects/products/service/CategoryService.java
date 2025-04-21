@@ -9,6 +9,7 @@ import com.msbprojects.products.mapper.CategoryMapper;
 import com.msbprojects.products.mapper.ProductMapper;
 import com.msbprojects.products.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

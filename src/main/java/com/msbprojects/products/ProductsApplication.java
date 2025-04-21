@@ -2,16 +2,27 @@ package com.msbprojects.products;
 
 import com.msbprojects.products.DummyTests.MyApp;
 import com.msbprojects.products.DummyTests.MyComponent;
+
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
+@Slf4j
 @SpringBootApplication
 public class ProductsApplication {
+
+    // can comment this if using annotation , no need for mentioning specific class
+   // private static final Logger log = LoggerFactory.getLogger(ProductsApplication.class);
+
 
     public static void main(String[] args) {
 
         SpringApplication.run(ProductsApplication.class, args);
+            log.info("This is an info message");
+            log.error("This is an error message");
 
         // Testing
 

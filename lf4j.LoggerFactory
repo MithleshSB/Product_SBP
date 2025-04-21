@@ -1,0 +1,107 @@
+warning: in the working copy of 'src/main/java/com/msbprojects/products/ProductsApplication.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/main/resources/application.properties', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/src/main/java/com/msbprojects/products/ProductsApplication.java b/src/main/java/com/msbprojects/products/ProductsApplication.java[m
+[1mindex 1096ac9..d834067 100644[m
+[1m--- a/src/main/java/com/msbprojects/products/ProductsApplication.java[m
+[1m+++ b/src/main/java/com/msbprojects/products/ProductsApplication.java[m
+[36m@@ -2,16 +2,27 @@[m [mpackage com.msbprojects.products;[m
+ [m
+ import com.msbprojects.products.DummyTests.MyApp;[m
+ import com.msbprojects.products.DummyTests.MyComponent;[m
+[32m+[m
+[32m+[m[32mimport lombok.extern.slf4j.Slf4j;[m
+[32m+[m[32mimport org.slf4j.LoggerFactory;[m
+[32m+[m[32mimport org.slf4j.Logger;[m
+ import org.springframework.boot.SpringApplication;[m
+ import org.springframework.boot.autoconfigure.SpringBootApplication;[m
+ import org.springframework.context.ApplicationContext;[m
+ [m
+[32m+[m[32m@Slf4j[m
+ @SpringBootApplication[m
+ public class ProductsApplication {[m
+ [m
+[32m+[m[32m    // can comment this if using annotation , no need for mentioning specific class[m
+[32m+[m[32m   // private static final Logger log = LoggerFactory.getLogger(ProductsApplication.class);[m
+[32m+[m
+[32m+[m
+     public static void main(String[] args) {[m
+ [m
+         SpringApplication.run(ProductsApplication.class, args);[m
+[32m+[m[32m            log.info("This is an info message");[m
+[32m+[m[32m            log.error("This is an error message");[m
+ [m
+         // Testing[m
+ [m
+[1mdiff --git a/src/main/java/com/msbprojects/products/security/SecurityConfig.java b/src/main/java/com/msbprojects/products/security/SecurityConfig.java[m
+[1mindex 555a490..749e2db 100644[m
+[1m--- a/src/main/java/com/msbprojects/products/security/SecurityConfig.java[m
+[1m+++ b/src/main/java/com/msbprojects/products/security/SecurityConfig.java[m
+[36m@@ -41,6 +41,7 @@[m [mpublic class SecurityConfig {[m
+     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {[m
+         http.csrf(csrf -> csrf.disable())[m
+                 .authorizeHttpRequests(request -> {[m
+[32m+[m[32m                    request.requestMatchers("/swagger-ui/**").permitAll();[m
+                     request.requestMatchers(HttpMethod.POST, "/user/**").permitAll();[m
+                     request.requestMatchers(HttpMethod.GET, "/api/**","/user/**").permitAll();[m
+                     request.anyRequest().authenticated();[m
+[1mdiff --git a/src/main/java/com/msbprojects/products/service/CategoryService.java b/src/main/java/com/msbprojects/products/service/CategoryService.java[m
+[1mindex 7d91b70..2d54cd5 100644[m
+[1m--- a/src/main/java/com/msbprojects/products/service/CategoryService.java[m
+[1m+++ b/src/main/java/com/msbprojects/products/service/CategoryService.java[m
+[36m@@ -9,6 +9,7 @@[m [mimport com.msbprojects.products.mapper.CategoryMapper;[m
+ import com.msbprojects.products.mapper.ProductMapper;[m
+ import com.msbprojects.products.repository.CategoryRepository;[m
+ import lombok.AllArgsConstructor;[m
+[32m+[m[32mimport lombok.extern.slf4j.Slf4j;[m
+ import org.springframework.stereotype.Service;[m
+ [m
+ import java.util.List;[m
+[1mdiff --git a/src/main/resources/application.properties b/src/main/resources/application.properties[m
+[1mindex 9bb2c74..efcd4dd 100644[m
+[1m--- a/src/main/resources/application.properties[m
+[1m+++ b/src/main/resources/application.properties[m
+[36m@@ -15,4 +15,7 @@[m [mspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect[m
+ [m
+ #springdoc.api-docs.path=/v3/api-docs[m
+ #springdoc.swagger-ui.path=/swagger-ui.html[m
+[31m-#server.servlet.context-path=/v1[m
+\ No newline at end of file[m
+[32m+[m[32m#server.servlet.context-path=/v1[m
+[32m+[m
+[32m+[m[32m# logback config[m
+[32m+[m[32mlogging.config = classpath:logback-spring.xml[m
+\ No newline at end of file[m
+[1mdiff --git a/src/main/resources/logback-spring.xml b/src/main/resources/logback-spring.xml[m
+[1mindex e69de29..1a67ebd 100644[m
+[1m--- a/src/main/resources/logback-spring.xml[m
+[1m+++ b/src/main/resources/logback-spring.xml[m
+[36m@@ -0,0 +1,28 @@[m
+[32m+[m[32m<configuration>[m
+[32m+[m[32m    <!-- Console Appender -->[m
+[32m+[m[32m    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">[m
+[32m+[m[32m        <encoder>[m
+[32m+[m[32m            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>[m
+[32m+[m[32m        </encoder>[m
+[32m+[m[32m    </appender>[m
+[32m+[m
+[32m+[m[32m    <!-- File Appender -> <appender name="FILE" class="ch.qos.logback.core.FileAppender"> -->[m
+[32m+[m[32m<!--    but if we want to store log date wise we need to set rolling file appender-->[m
+[32m+[m[32m    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">[m
+[32m+[m[32m        <file>logs/application.log</file>[m
+[32m+[m[32m        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">[m
+[32m+[m[32m<!--            HHmm added to see diff file checkup-->[m
+[32m+[m[32m            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>[m
+[32m+[m[32m            <maxHistory>30</maxHistory>[m
+[32m+[m[32m        </rollingPolicy>[m
+[32m+[m[32m        <encoder>[m
+[32m+[m[32m            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>[m
+[32m+[m[32m        </encoder>[m
+[32m+[m[32m    </appender>[m
+[32m+[m
+[32m+[m[32m    <!-- Root Logger -->[m
+[32m+[m[32m    <root level="info">[m
+[32m+[m[32m        <appender-ref ref="Console" />[m
+[32m+[m[32m        <appender-ref ref="FILE" />[m
+[32m+[m[32m    </root>[m
+[32m+[m[32m</configuration>[m
+\ No newline at end of file[m
